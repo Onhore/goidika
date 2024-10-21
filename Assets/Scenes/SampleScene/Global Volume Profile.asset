@@ -15,32 +15,32 @@ MonoBehaviour:
   active: 1
   skyMode:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 2
   framebufferDitherWeight:
     m_OverrideState: 1
-    m_Value: 0.35
+    m_Value: 1
   skyRotation:
     m_OverrideState: 1
     m_Value: {x: 0, y: 0, z: 0}
   textureFilterMode:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 2
   skyboxTexture:
     m_OverrideState: 1
-    m_Value: {fileID: 0}
+    m_Value: {fileID: 8900000, guid: 3ba0c79f99326db48a3e7833ae2c4f8b, type: 3}
     dimension: 1
   tiledLayersSkyHeightScale:
     m_OverrideState: 1
     m_Value: 0.25
   tiledLayersSkyHorizonOffset:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -0.09
   tiledLayersSkyColorLayer0:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_Value: {r: 0.6226415, g: 0.26726595, b: 0.26726595, a: 1}
   tiledLayersSkyTextureLayer0:
     m_OverrideState: 1
-    m_Value: {fileID: 0}
+    m_Value: {fileID: 2800000, guid: 3ba0c79f99326db48a3e7833ae2c4f8b, type: 3}
     dimension: 1
   tiledLayersSkyTextureScaleOffsetLayer0:
     m_OverrideState: 1
@@ -116,7 +116,7 @@ MonoBehaviour:
     m_Value: 50
   fogFalloffCurve:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.42
   heightFalloffEnabled:
     m_OverrideState: 1
     m_Value: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
     m_Value: 10
   colorLUTMode:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   colorLUTTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
@@ -193,7 +193,7 @@ MonoBehaviour:
     m_Value: 1
   geometry:
     m_OverrideState: 1
-    m_Value: 0.84
+    m_Value: 0.85
   geometryPushbackEnabled:
     m_OverrideState: 0
     m_Value: 0
@@ -211,19 +211,19 @@ MonoBehaviour:
     m_Value: 1
   affineTextureWarping:
     m_OverrideState: 1
-    m_Value: 0.08
+    m_Value: 0.05
   framebufferDither:
-    m_OverrideState: 1
-    m_Value: 1
+    m_OverrideState: 0
+    m_Value: 0
   ditherSize:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   drawDistanceFalloffMode:
     m_OverrideState: 1
     m_Value: 0
   drawDistance:
     m_OverrideState: 1
-    m_Value: 50
+    m_Value: 200
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,10 +262,10 @@ MonoBehaviour:
     m_Value: 1
   weight:
     m_OverrideState: 1
-    m_Value: 0.48
+    m_Value: 0
   accuracy:
     m_OverrideState: 1
-    m_Value: 0.73
+    m_Value: 1
   mode:
     m_OverrideState: 1
     m_Value: 0
@@ -290,28 +290,28 @@ MonoBehaviour:
     m_Value: 1
   contrast:
     m_OverrideState: 1
-    m_Value: 0.56
+    m_Value: 0.58
   shoulder:
     m_OverrideState: 1
-    m_Value: 0.7
+    m_Value: 1
   graypointIn:
     m_OverrideState: 1
-    m_Value: 0.26
+    m_Value: 0.2
   graypointOut:
     m_OverrideState: 1
-    m_Value: 0.17
+    m_Value: 0.2
   whitepoint:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 10.62
   crossTalk:
     m_OverrideState: 1
-    m_Value: 0.93
+    m_Value: 1
   saturation:
     m_OverrideState: 1
     m_Value: 0
   crossTalkSaturation:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.27
 --- !u!114 &3489884264109499024
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -346,10 +346,10 @@ MonoBehaviour:
     m_Value: 1
   bloom:
     m_OverrideState: 1
-    m_Value: 0.64
+    m_Value: 0.73
   grateMaskMode:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 5
   grateMaskTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
@@ -359,7 +359,7 @@ MonoBehaviour:
     m_Value: 1
   scanlineSharpness:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.08
   imageSharpness:
     m_OverrideState: 1
     m_Value: 1
@@ -374,10 +374,10 @@ MonoBehaviour:
     m_Value: 0
   noiseSaturation:
     m_OverrideState: 1
-    m_Value: 0.53
+    m_Value: 0.27
   grateMaskIntensityMin:
     m_OverrideState: 1
-    m_Value: 0.46
+    m_Value: 0.37
   grateMaskIntensityMax:
     m_OverrideState: 1
     m_Value: 0.39
@@ -389,4 +389,4 @@ MonoBehaviour:
     m_Value: 0
   vignette:
     m_OverrideState: 1
-    m_Value: 0.45
+    m_Value: 0.37

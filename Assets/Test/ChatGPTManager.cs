@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using OpenAI;
+using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using UnityEngine;
 
 public class ChatGPTManager : MonoBehaviour
 {
     private OpenAIApi openAI = new OpenAIApi();
-    private List<ChatMessage> messages = new List<ChatMessage>();
+    //private List<ChatMessage> messages = new List<ChatMessage>();
 
-    public async void AskChatGPT(string newText)
+    public async Task<string> AskChatGPT(string newText, List<ChatMessage>messages)
     {
         ChatMessage newMessage = new ChatMessage();
         newMessage.Content = newText;
@@ -27,8 +29,9 @@ public class ChatGPTManager : MonoBehaviour
             var chatResponse = response.Choices[0].Message;
             messages.Add(chatResponse);
 
-            Debug.Log(chatResponse.Content);
+            return chatResponse.Content;
         }
+        return null;
     }
 
 
