@@ -15,7 +15,7 @@ MonoBehaviour:
   active: 1
   skyMode:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 0
   framebufferDitherWeight:
     m_OverrideState: 1
     m_Value: 1
@@ -97,7 +97,7 @@ MonoBehaviour:
     m_Value: 0
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.44351703, g: 0.44197223, b: 0.49056602, a: 1}
+    m_Value: {r: 0.6852925, g: 0.6886792, b: 0.6659398, a: 1}
   precisionAlpha:
     m_OverrideState: 1
     m_Value: 1
@@ -153,13 +153,13 @@ MonoBehaviour:
     m_Value: 0
   colorLayer1:
     m_OverrideState: 1
-    m_Value: {r: 0.4509804, g: 0.25796872, b: 0.24313726, a: 1}
+    m_Value: {r: 0.5471698, g: 0.5190344, b: 0.48264506, a: 1}
   distanceMinLayer1:
     m_OverrideState: 1
     m_Value: 0
   distanceMaxLayer1:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 20
   fogFalloffCurveLayer1:
     m_OverrideState: 1
     m_Value: 0
@@ -244,6 +244,8 @@ MonoBehaviour:
   - {fileID: 2783689631541850708}
   - {fileID: -4136514463026868258}
   - {fileID: -4629407068038324111}
+  - {fileID: 8045397688819761110}
+  - {fileID: 6642232255113279141}
 --- !u!114 &1853115602256856986
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -328,6 +330,53 @@ MonoBehaviour:
   isPSXQualityEnabled:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &6642232255113279141
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73811fdb48dddb143add2662b3aba7bf, type: 3}
+  m_Name: TerrainGrassVolume
+  m_EditorClassIdentifier: 
+  active: 1
+  textureFilterMode:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &8045397688819761110
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac4315c5d81c1274fb8120ba49e62c21, type: 3}
+  m_Name: LightingVolume
+  m_EditorClassIdentifier: 
+  active: 0
+  lightingIsEnabled:
+    m_OverrideState: 0
+    m_Value: 1
+  bakedLightingMultiplier:
+    m_OverrideState: 0
+    m_Value: 1
+  vertexColorLightingMultiplier:
+    m_OverrideState: 0
+    m_Value: 0
+  dynamicLightingMultiplier:
+    m_OverrideState: 0
+    m_Value: 1
+  dynamicLightsMaxCount:
+    m_OverrideState: 0
+    m_Value: 256
+  dynamicLightsMaxPerObjectCount:
+    m_OverrideState: 0
+    m_Value: 4
 --- !u!114 &8917627030495926833
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -389,4 +438,4 @@ MonoBehaviour:
     m_Value: 0
   vignette:
     m_OverrideState: 1
-    m_Value: 0.37
+    m_Value: 0.376

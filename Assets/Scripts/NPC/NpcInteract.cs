@@ -20,11 +20,8 @@ public class NpcInteract : MonoBehaviour, IInteractable
     public void Interact()
     {
         Debug.Log("Interact!");
-        StartDialogue();
+        Player.instance.gameObject.GetComponent<PlayerDialogue>()?.StartDialogue(GetComponent<NpcDescription>());
     }
 
-    private void StartDialogue()
-    {
-        UIDialogue.StartDialogue();
-    }
+
 }

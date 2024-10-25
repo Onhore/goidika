@@ -21,7 +21,8 @@ public class ChatGPTManager : MonoBehaviour
         CreateChatCompletionRequest request = new CreateChatCompletionRequest();
         request.Messages = messages;
         request.Model = "gpt-3.5-turbo";
-
+        //request.MaxTokens = 
+//"gpt-3.5-turbo"
         var response = await openAI.CreateChatCompletion(request);
 
         if (response.Choices != null && response.Choices.Count > 0)
@@ -31,7 +32,7 @@ public class ChatGPTManager : MonoBehaviour
 
             return chatResponse.Content;
         }
-        return null;
+        return "Ничего";
     }
 
 

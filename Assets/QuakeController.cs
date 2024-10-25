@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class QMovement : MonoBehaviour
 {
@@ -48,9 +49,13 @@ public class QMovement : MonoBehaviour
 	private float crouch_value_s = 0;
 	private Vector3 center_offset;
 	#endif
-
+	[SerializeField] private UnityEvent OnLockMovement;
+	private bool lockMovement = false;
 	void Start () 
 	{
+		OnLockMovement.AddListener(LockMovement);
+		OnLockMovement.AddListener(LockCursor);
+
 		player_rotation = transform.rotation;
 		controller = GetComponent<CharacterController>();
 		controller.skinWidth = 0.03f;
@@ -65,17 +70,18 @@ public class QMovement : MonoBehaviour
 		#if USE_CROUCH
 		center_offset = new Vector3(0, 0, 0);
 		#endif
-		if (!Application.isEditor)
-		{
-			Cursor.visible = false;
-		}
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+		LockCursor();
 	}
-
+	public void Lock() => OnLockMovement.Invoke();
+	private void LockMovement() => lockMovement = !lockMovement;
+	private void LockCursor()
+	{
+		Cursor.lockState = (CursorLockMode.Locked == Cursor.lockState) ? CursorLockMode.None : CursorLockMode.Locked;
+		Cursor.visible = !Cursor.visible;
+	}
 	void Update () 
 	{
+		if(lockMovement) return;
 		frame_time = Time.deltaTime;
 		move_input.x = Input.GetAxisRaw("Horizontal");
 		move_input.z = Input.GetAxisRaw("Vertical");
