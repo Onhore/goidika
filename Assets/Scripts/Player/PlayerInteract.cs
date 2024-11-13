@@ -15,7 +15,7 @@ public class PlayerInteract : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, InteractLayer))
+            if (Physics.Raycast(ray, out hit, InteractRange, InteractLayer))
             {
                 hit.collider.gameObject.GetComponent<IInteractable>()?.Interact();
             }

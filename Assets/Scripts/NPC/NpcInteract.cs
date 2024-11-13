@@ -20,7 +20,7 @@ public class NpcInteract : MonoBehaviour, IInteractable
     public void Interact()
     {
         Debug.Log("Interact!");
-        Player.instance.gameObject.GetComponent<PlayerDialogue>()?.StartDialogue(GetComponent<NpcDescription>());
+        Player.instance.Dialogue?.StartDialogue(GetComponent<NpcDescription>());
     }
 
 

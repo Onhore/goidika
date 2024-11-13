@@ -292,7 +292,7 @@ MonoBehaviour:
     m_Value: 1
   contrast:
     m_OverrideState: 1
-    m_Value: 0.58
+    m_Value: 0.555
   shoulder:
     m_OverrideState: 1
     m_Value: 1
@@ -342,7 +342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73811fdb48dddb143add2662b3aba7bf, type: 3}
   m_Name: TerrainGrassVolume
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   textureFilterMode:
     m_OverrideState: 1
     m_Value: 0
@@ -408,7 +408,7 @@ MonoBehaviour:
     m_Value: 1
   scanlineSharpness:
     m_OverrideState: 1
-    m_Value: 0.08
+    m_Value: 0.357
   imageSharpness:
     m_OverrideState: 1
     m_Value: 1
@@ -423,13 +423,13 @@ MonoBehaviour:
     m_Value: 0
   noiseSaturation:
     m_OverrideState: 1
-    m_Value: 0.27
+    m_Value: 0.194
   grateMaskIntensityMin:
     m_OverrideState: 1
-    m_Value: 0.37
+    m_Value: 0.364
   grateMaskIntensityMax:
     m_OverrideState: 1
-    m_Value: 0.39
+    m_Value: 0.327
   barrelDistortionX:
     m_OverrideState: 1
     m_Value: 0

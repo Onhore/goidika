@@ -20,8 +20,8 @@ public class ChatGPTManager : MonoBehaviour
 
         CreateChatCompletionRequest request = new CreateChatCompletionRequest();
         request.Messages = messages;
-        request.Model = "gpt-3.5-turbo";
-        //request.MaxTokens = 
+        request.Model = "gpt-4-turbo";
+        request.MaxTokens = 1000;
 //"gpt-3.5-turbo"
         var response = await openAI.CreateChatCompletion(request);
 
