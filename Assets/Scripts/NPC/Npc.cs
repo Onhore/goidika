@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Npc : MonoBehaviour
 {
@@ -14,12 +15,20 @@ public class Npc : MonoBehaviour
     }
     public StateMachine currentState;
 
+    private NavMeshAgent navMeshAgent;
+    public Transform moveTrans;
+    private void Awake()
+    {
+        navMeshAgent = GetComponent<NavMeshAgent>();
+    }
     private void Start()
     {
         currentState = StateMachine.Idle;
     }
     private void Update()
     {
+        if (moveTrans != null)
+            navMeshAgent.destination = moveTrans.position;
         switch(currentState)
         {
             case StateMachine.Idle:
