@@ -8,13 +8,19 @@ using System.Text.RegularExpressions;
 
 public class NpcDescription : MonoBehaviour
 {
-    [TextArea(15,20)] public string Description = "";
+    [TextArea(15, 20)] public string Description = "";
     private List<ChatMessage> messages = new List<ChatMessage>();
     public ChatGPTManager ChatGPT;
     private string LastMessage = "";
     [SerializeField] private AudioClip sound;
     [SerializeField] private float delay;
     //public TMP_Text Diag;
+    private Npc npc;
+
+    void Awake()
+    {
+        npc = GetComponent<Npc>();
+    }
 
     void Start()
     {
@@ -22,6 +28,7 @@ public class NpcDescription : MonoBehaviour
         Debug.Log(this + " " + Description);
         //Debug.Log(CheckCommand("Привет путник! [Атаковать Player] dgd [Идти вперед] впыппыпыф фпфвпы ывп ып [Срать под себя]"));
     }
+
     private void SetContext(string text)
     {
         ChatMessage newMessage = new ChatMessage();
@@ -30,16 +37,19 @@ public class NpcDescription : MonoBehaviour
 
         messages.Add(newMessage);
     }
+    public void AddSystemMessage(string text) => SetContext(text);
 
     public async void Ask(string text)
     {
         string answ = await ChatGPT.AskChatGPT(text, messages);
+        Debug.Log(answ);
         answ = CheckCommand(answ);
-        Player.instance.GetComponent<PlayerDialogue>().WriteText(answ,sound,delay);
+        Player.instance.GetComponent<PlayerDialogue>().WriteText(answ, sound, delay);
         //Diag.text = answ;
         Debug.Log(answ);
     }
-     public string CheckCommand(string text)
+
+    public string CheckCommand(string text)
     {
         // Используем регулярное выражение для поиска команды в квадратных скобках
         Match match = Regex.Match(text, @"\[(.*?)\]");
@@ -62,16 +72,30 @@ public class NpcDescription : MonoBehaviour
             switch (command)
             {
                 case "Идти":
-                    //Go(attribute);
+                    GlobalLists.Place place = GlobalLists.PlaceList.instance.FindPlace(attribute);
+                    if (place != null)
+                    {
+                        npc.EndDialogueEvent += () => npc.Go(place);
+                    }
+                    break;
+                case "Следовать":
+                    GameObject target = GlobalLists.MobList.instance.FindMob(attribute);
+                    if (target != null)
+                    {
+                        npc.EndDialogueEvent += () => npc.Follow(target);
+                    }
+                    break;
+                case "ПрекратитьСледование":
+                    npc.StopFollow();
+                    break;
+                case "ПрекратитьИдти":
+                    npc.StopGo();
                     break;
                 case "Атаковать":
                     //Attack(attribute);
                     break;
                 case "ПроверитьИнвентарь":
                     //CheckInventory(attribute);
-                    break;
-                case "Выбрать":
-                    //Select(attribute);
                     break;
                 case "Закончить":
                     //Finish(attribute);
@@ -90,6 +114,4 @@ public class NpcDescription : MonoBehaviour
             return text; // Возвращаем исходный текст, если команда не найдена
         }
     }
-
-    
 }

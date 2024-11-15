@@ -13,16 +13,21 @@ public class PlayerDialogue : MonoBehaviour
     [SerializeField] private DialogueLine dialogueLine;
     public bool OnDialogue => onDialogue;
     private bool onDialogue = false;
+    private Npc npcInDialog;
     public void StartDialogue(NpcDescription npc)
     {
         onDialogue = true;
+        npcInDialog = npc.gameObject.GetComponent<Npc>();
+        npcInDialog.StartDialogue();
         InputField.onEndEdit.AddListener(npc.Ask);
         OnStartDialogue.Invoke();
     }
     public void EndDialogue()
     {
+        npcInDialog.EndDialogue();
         OnEndDialogue.Invoke();
         InputField.onEndEdit.RemoveAllListeners();
+        npcInDialog = null;
         onDialogue = false;
     }
     public void WriteText(string text, AudioClip sound, float delay)
