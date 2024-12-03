@@ -6,6 +6,7 @@ using OpenAI;
 using TMPro;
 using System.Text.RegularExpressions;
 
+[RequireComponent(typeof(Npc))]
 public class NpcDescription : MonoBehaviour
 {
     [TextArea(15, 20)] public string Description = "";
@@ -52,34 +53,35 @@ public class NpcDescription : MonoBehaviour
     public string CheckCommand(string text)
     {
         // Используем регулярное выражение для поиска команды в квадратных скобках
-        Match match = Regex.Match(text, @"\[(.*?)\]");
+        Match match = Regex.Match(text, @"\((.*?)\)");
         if (match.Success)
         {
             string commandText = match.Groups[1].Value;
 
             // Разделяем текст на команду и атрибут
             string[] parts = commandText.Split(' ');
-            if (parts.Length != 2)
+            if (parts.Length > 2)
             {
                 Debug.LogError("Неверный формат команды: " + commandText);
                 return text; // Возвращаем исходный текст, если формат команды неверен
             }
 
             string command = parts[0];
-            string attribute = parts[1];
+            //string attribute = parts[1];
 
             // Проверяем команду и вызываем соответствующий метод
             switch (command)
             {
                 case "Идти":
-                    GlobalLists.Place place = GlobalLists.PlaceList.instance.FindPlace(attribute);
+                    GlobalLists.Place place = GlobalLists.PlaceList.instance.FindPlace(parts[1]);
                     if (place != null)
                     {
                         npc.EndDialogueEvent += () => npc.Go(place);
                     }
                     break;
                 case "Следовать":
-                    GameObject target = GlobalLists.MobList.instance.FindMob(attribute);
+                    GameObject target = GlobalLists.MobList.instance.FindMob(parts[1]);
+                    Debug.Log(parts[1]);
                     if (target != null)
                     {
                         npc.EndDialogueEvent += () => npc.Follow(target);

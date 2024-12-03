@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Item : MonoBehaviour, IInteractable
 {
@@ -26,6 +28,9 @@ public class Item : MonoBehaviour, IInteractable
     private Collider collider;
 
     private bool PickedUp = false;
+    private GameObject pickedUpBy;
+
+    [SerializeField] protected UnityEvent OnClick;
 
     private void Awake()
     {
@@ -37,6 +42,7 @@ public class Item : MonoBehaviour, IInteractable
     {
         Debug.Log("PickUp!");
         Player.instance.Inventory?.PickUpItem(this);
+        pickedUpBy = Player.instance.gameObject;
     }
 
     public void PickUp()
@@ -58,6 +64,8 @@ public class Item : MonoBehaviour, IInteractable
     {
         if (PickedUp)
         {
+            if(Input.GetMouseButtonDown(0))
+                OnClick.Invoke();
             // Определяем целевую позицию и вращение предмета
             Vector3 cameraPosition = Camera.main.transform.position;
             Vector3 cameraForward = Camera.main.transform.forward;

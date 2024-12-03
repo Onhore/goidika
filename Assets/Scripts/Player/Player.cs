@@ -28,4 +28,5 @@ public class Player : MonoBehaviour
         interact = GetComponent<PlayerInteract>();
         inventory = GetComponent<PlayerInventory>();
     }
+    
 }

@@ -4,47 +4,56 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-
+[RequireComponent(typeof(NpcDescription))]
+[RequireComponent(typeof(NpcInteract))]
 public class Npc : MonoBehaviour
 {
-    public enum StateMachine
-    {
-        Idle,
-        GoTo,
-        Follow,
-        Attack,
-        Death,
-        Dialogue
-    }
-    public StateMachine currentState;
-    public StateMachine lastState;
-
+    NpcStateMachine stateMachine;
+    private IdleNpcState IdleState;
+    private DialogueNpcState DialogueState;
+    private FollowNpcState  FollowState;
+    private GoToNpcState  GoToState;
     private NavMeshAgent navMeshAgent;
-    public Transform moveTrans;
-    private GameObject followTarget;
-    private GlobalLists.Place goToPlace;
-    private bool inDialogue = false;
+    //public Transform GoToPoint;
+    public GameObject FollowTarget {private set; get;}
+    public GlobalLists.Place GoToPlace {private set; get;}
+    public Vector3 DefaultBasePoint {private set; get;}
+    private bool inDialogue => stateMachine.CurrentState is DialogueNpcState;
 
     public event System.Action EndDialogueEvent;
     [SerializeField] private float dialogueRotationSpeed;
+    [SerializeField] private float followDistance = 5f; 
+    [SerializeField] private float maxFollowDistance = 20f; 
+    [SerializeField] private float placeDistance = 3f;
+
 
     private NpcDescription npcDescription;
+    public Animator animator;
 
     private void Awake()
     {
+        DefaultBasePoint = transform.position;
         navMeshAgent = GetComponent<NavMeshAgent>();
         npcDescription = GetComponent<NpcDescription>();
+        stateMachine = new NpcStateMachine();
+        //animator = GetComponent<Animator>();
+        IdleState = new IdleNpcState(this, stateMachine);
+        DialogueState = new DialogueNpcState(this, stateMachine, navMeshAgent, dialogueRotationSpeed);
+        FollowState = new FollowNpcState(this, stateMachine, navMeshAgent, GoToState, IdleState, maxFollowDistance,followDistance,animator);
+        GoToState = new GoToNpcState(this, stateMachine, navMeshAgent, IdleState, animator, placeDistance, DefaultBasePoint);
     }
 
     private void Start()
     {
-        currentState = StateMachine.Idle;
-        Debug.Log(navMeshAgent.destination);
+        //currentState = StateMachine.Idle;
+        //Debug.Log(navMeshAgent.destination);
+        stateMachine.Init(IdleState);
     }
 
     private void Update()
     {
-        switch (currentState)
+        stateMachine.CurrentState.Update();
+        /*switch (currentState)
         {
             case StateMachine.Idle:
                 IdleUpdate();
@@ -61,108 +70,142 @@ public class Npc : MonoBehaviour
             case StateMachine.Dialogue:
                 DialogueUpdate();
                 break;
-        }
+        }*/
     }
 
     private void IdleUpdate()
     {
         // Implement idle behavior
+        //animator.SetBool("isWalking", false);
     }
 
-    private void GoToUpdate()
+    /*private void GoToUpdate()
     {
         if (navMeshAgent.isStopped)
             navMeshAgent.isStopped = false;
-         if (Vector3.Distance(transform.position, navMeshAgent.destination) <= navMeshAgent.stoppingDistance)
+        if (Vector3.Distance(transform.position, navMeshAgent.destination) <= PlaceDistance)
         {
             navMeshAgent.isStopped = true;
-            npcDescription.AddSystemMessage("Вы прибыли в место: " + goToPlace.Name + ". Описание: " + goToPlace.Description);
+            //npcDescription.AddSystemMessage("Вы прибыли в место: " + goToPlace.Name + ". Описание: " + goToPlace.Description);
             Debug.Log("Reached destination, switching to Idle state");
             goToPlace = null;
-            currentState = StateMachine.Idle;
+            //currentState = StateMachine.Idle;
         }
-    }
+        animator.SetBool("isWalking", true);
+    }*/
 
-    private void FollowUpdate()
+    /*private void FollowUpdate()
     {
         if (followTarget != null)
         {
-            navMeshAgent.destination = followTarget.transform.position;
+            float distanceToTarget = Vector3.Distance(transform.position, followTarget.transform.position);
+            if (distanceToTarget > maxFollowDistance)
+            {
+                navMeshAgent.destination = defaultBasePoint.position;
+                //currentState = StateMachine.GoTo;
+                followTarget = null;
+                Debug.Log("Target is too far, returning to base point");
+            }
+            else if (distanceToTarget > followDistance)
+            {
+                navMeshAgent.destination = followTarget.transform.position;
+                animator.SetBool("isWalking", true);
+                Debug.Log("Следование");
+                navMeshAgent.isStopped = false;
+            }
+            else
+            {
+                navMeshAgent.isStopped = true;
+                animator.SetBool("isWalking", false);
+            }
         }
         else
         {
-            currentState = StateMachine.Idle;
+            //currentState = StateMachine.Idle;
         }
-    }
+    }*/
 
     private void AttackUpdate()
     {
         // Implement attack behavior
     }
 
-    private void DialogueUpdate()
+    /*private void DialogueUpdate()
     {
-
-
-            Vector3 direction = Player.instance.transform.position - transform.position;
-            direction.y = 0; // Игнорируем вертикальное смещение
+        Vector3 direction = Player.instance.transform.position - transform.position;
+        direction.y = 0;
+        if (direction != Vector3.zero)
+        {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-            // Проверяем, стоит ли NPC к игроку спиной
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, dialogueRotationSpeed * Time.deltaTime);
-
-        
-    }
+        }
+    }*/
 
     public void Idle()
     {
-        currentState = StateMachine.Idle;
+        stateMachine.ChangeState(IdleState);
     }
 
     public void Go(GlobalLists.Place place)
     {
-        goToPlace = place;
-        currentState = StateMachine.GoTo;
-        navMeshAgent.destination = goToPlace.Coordinates.position;
+        GoToPlace = place;
+        stateMachine.ChangeState(GoToState);
+        //currentState = StateMachine.GoTo;
+        //navMeshAgent.destination = GoToPlace.Coordinates.position;
     }
+    public void Go()
+    {
+        GoToPlace = null;
+        stateMachine.ChangeState(GoToState);
+        //currentState = StateMachine.GoTo;
+        //navMeshAgent.destination = GoToPlace.Coordinates.position;
+    }
+
     public void StopGo()
     {
-        goToPlace = null;
-        //currentState = StateMachine.Idle;
-        lastState = StateMachine.Idle;
-        navMeshAgent.destination = transform.position;
+        GoToPlace = null;
+        stateMachine.ChangeState(IdleState);
+        //lastState = StateMachine.Idle;
+        //navMeshAgent.destination = transform.position;
     }
+
     public void Follow(GameObject target)
     {
-        followTarget = target;
-        currentState = StateMachine.Follow;
+        FollowTarget = target;
+        stateMachine.ChangeState(FollowState);
     }
+
     public void StopFollow()
     {
-        followTarget = null;
-        lastState = StateMachine.Idle;
+        EndDialogueEvent = null;
+        Debug.Log("Стоп следование");
+        FollowTarget = null;
+        stateMachine.ChangeState(IdleState);
     }
 
     public void Attack(LayerMask enemyLayerMask)
     {
-        currentState = StateMachine.Attack;
+        //currentState = StateMachine.Attack;
     }
 
     public void StartDialogue()
     {
-        if (currentState == StateMachine.GoTo)
-            navMeshAgent.isStopped = true;
-        inDialogue = true;
-        lastState = currentState;
-        currentState = StateMachine.Dialogue;
+        //if (//currentState == StateMachine.GoTo)
+        //navMeshAgent.isStopped = true;
+        stateMachine.ChangeState(DialogueState);
+        //inDialogue = true;
+        //lastState = currentState;
+        //currentState = StateMachine.Dialogue;
     }
 
     public void EndDialogue()
     {
-        inDialogue = false;
-        if (lastState == StateMachine.GoTo)
-            navMeshAgent.isStopped = false;
-        currentState = lastState;
+        //inDialogue = false;
+        //if (//lastState == StateMachine.GoTo)
+        //navMeshAgent.isStopped = false;
+        //currentState = lastState;
+        stateMachine.ChangeState(IdleState);
         EndDialogueEvent?.Invoke();
+        
     }
 }

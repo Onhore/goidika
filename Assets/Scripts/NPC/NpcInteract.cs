@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(NpcDescription))]
+[RequireComponent(typeof(Npc))]
 public class NpcInteract : MonoBehaviour, IInteractable
 {
     public PlayerDialogue UIDialogue;
