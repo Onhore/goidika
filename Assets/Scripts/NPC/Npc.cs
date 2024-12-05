@@ -50,7 +50,7 @@ public class Npc : MonoBehaviour, IDyinable
         DialogueState = new DialogueNpcState(this, stateMachine, navMeshAgent, dialogueRotationSpeed);
         FollowState = new FollowNpcState(this, stateMachine, navMeshAgent, GoToState, IdleState, maxFollowDistance,followDistance,animator);
         GoToState = new GoToNpcState(this, stateMachine, navMeshAgent, IdleState, animator, placeDistance, DefaultBasePoint);
-        AttackState = new AttackNpcState(this, stateMachine, navMeshAgent, animator);
+        AttackState = new AttackNpcState(this, stateMachine, navMeshAgent, animator, AttackDamage);
         GetDamageState = new GetDamageNpcState(this, stateMachine, navMeshAgent, animator);
         DeadState = new DeadNpcState(this, stateMachine, navMeshAgent, animator, GetComponent<CharacterController>(), deadTime);
     }
@@ -118,7 +118,7 @@ public class Npc : MonoBehaviour, IDyinable
     public void StopFollow()
     {
         EndDialogueEvent = null;
-        Debug.Log("Стоп следование");
+        //Debug.Log("Стоп следование");
         FollowTarget = null;
         stateMachine.ChangeState(IdleState);
     }
@@ -131,7 +131,7 @@ public class Npc : MonoBehaviour, IDyinable
         {
             Target = target;
             stateMachine.ChangeState(AttackState);
-            Debug.Log("Attack Start");
+            //Debug.Log("Attack Start");
         }   
         //currentState = StateMachine.Attack;
     }
@@ -159,6 +159,7 @@ public class Npc : MonoBehaviour, IDyinable
         //currentState = lastState;
         stateMachine.ChangeState(IdleState);
         EndDialogueEvent?.Invoke();
+        EndDialogueEvent = null;
         
     }
     public void GetInvulnerability(float duration)
@@ -175,6 +176,7 @@ public class Npc : MonoBehaviour, IDyinable
     {
         Target = null;
         FollowTarget = null;
+        GetDamageState.ClearFlag();
         stateMachine.ChangeState(DeadState);
     }
     public void ForgotAttackTarget()

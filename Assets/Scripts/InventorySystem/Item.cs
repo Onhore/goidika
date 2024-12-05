@@ -59,12 +59,17 @@ public class Item : MonoBehaviour, IInteractable
         PickedUp = false;
         rigidbody.AddForce(Camera.main.transform.forward * dropForce, ForceMode.Impulse);
     }
-
+    public void GiveToNpc(Npc npc)
+    {
+        Drop();
+        npc.GetComponent<NpcDescription>().AddSystemMessage("Игрок подарил вам предмет " + Name + ". Описание данного предмета: " + Description);
+        Destroy(gameObject);
+    }
     private void Update()
     {
         if (PickedUp)
         {
-            if(Input.GetMouseButtonDown(0))
+            if(Input.GetMouseButtonDown(0) && !Player.instance.onDialogue)
                 OnClick.Invoke();
             // Определяем целевую позицию и вращение предмета
             Vector3 cameraPosition = Camera.main.transform.position;

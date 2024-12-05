@@ -24,6 +24,7 @@ public class DeadNpcState : NpcState
         npc.GetComponent<Health>().IsInvulnerable = true;
         npc.isDead=true;
         collider.enabled = false;
+        npc.GetComponent<NpcDescription>().AddSystemMessage("Вас вырубил " + GlobalLists.MobList.instance.FindMob(npc.GetComponent<Health>().LastEnemy.name).Name + ". Вы без сознания.");
     }
     public override void Update()
     {
@@ -44,5 +45,6 @@ public class DeadNpcState : NpcState
         npc.GetComponent<Health>().IsInvulnerable = false;
         npc.GetComponent<IHealable>().Heal(30);
         collider.enabled = true;
+        npc.GetComponent<NpcDescription>().AddSystemMessage("Вы пришли в себя.");
     }
 }

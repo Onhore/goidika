@@ -11,7 +11,6 @@ public class DialogueBaseClass : MonoBehaviour
 {
     protected IEnumerator WriteText(string input, TMP_Text textHolder, Color textColor, TMP_FontAsset textFont, float delay, AudioClip sound)
     {
-        
         textHolder.color = textColor;
         textHolder.font = textFont;
         textHolder.text = "";

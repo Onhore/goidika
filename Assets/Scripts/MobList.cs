@@ -25,13 +25,13 @@ public class MobList : MonoBehaviour
 
     [SerializeField] private List<Mob> mobs;
 
-    public GameObject FindMob(string idName)
+    public Mob FindMob(string idName)
     {
         foreach (var mob in mobs)
         {
             if (mob.idName == idName)
             {
-                return mob.gameObject;
+                return mob;
             }
         }
         return null;

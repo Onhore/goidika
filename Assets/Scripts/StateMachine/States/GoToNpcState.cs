@@ -12,6 +12,7 @@ public class GoToNpcState : NpcState
     private float placeDistance;
     private GlobalLists.Place goToPlace => npc?.GoToPlace;
     private Vector3 defaultBasePoint;
+    //private bool isPlace => goToPlace != null;
     public GoToNpcState(Npc npc, NpcStateMachine stateMachine, NavMeshAgent navMeshAgent, IdleNpcState idleState, Animator animator, float placeDistance, Vector3 defaultPoint) : base(npc, stateMachine)
     {
         this.idleState = idleState;
@@ -40,6 +41,8 @@ public class GoToNpcState : NpcState
             navMeshAgent.isStopped = true;
             //npcDescription.AddSystemMessage("Вы прибыли в место: " + goToPlace.Name + ". Описание: " + goToPlace.Description);
             //Debug.Log("Reached destination, switching to Idle state");
+            if(goToPlace != null)
+                npc.GetComponent<NpcDescription>().AddSystemMessage("Вы прибыли в " + goToPlace.Name + ". Описание: " + goToPlace.Description);
             npc.Idle();
             //currentState = StateMachine.Idle;
         }

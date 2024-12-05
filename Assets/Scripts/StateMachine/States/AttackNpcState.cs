@@ -7,7 +7,7 @@ public class AttackNpcState : NpcState
 {
     private float attackRange = 2f;
     private float attackCooldown = 1f;
-    private float damage = 10f;
+    private float damage;
     private float attackDuration = 0.5f;
 
     private float lastAttackTime = 0f;
@@ -15,26 +15,42 @@ public class AttackNpcState : NpcState
     private float attackStartTime = 0f;
     private NavMeshAgent navMeshAgent;
     private Animator animator;
+    private bool AttackingSession = true;
 
-    public AttackNpcState(Npc npc, NpcStateMachine stateMachine, NavMeshAgent navMeshAgent, Animator animator) : base(npc, stateMachine)
+    public AttackNpcState(Npc npc, NpcStateMachine stateMachine, NavMeshAgent navMeshAgent, Animator animator, float damage) : base(npc, stateMachine)
     {
         this.navMeshAgent = navMeshAgent;
         this.animator = animator;
+        this.damage = damage;
     }
 
     public override void EnterState()
     {
         base.EnterState();
-        Debug.Log("Attack");
+        //Debug.Log("Attack");
         navMeshAgent.isStopped = false;
+        if (AttackingSession)
+            {
+            npc.GetComponent<NpcDescription>().AddSystemMessage("Вы начинаете атаковать " + GlobalLists.MobList.instance.FindMob(npc.Target.name).Name + ".");
+            AttackingSession = false;
+            }
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (npc.Target == null || npc.Target.GetComponent<IDyinable>().IsDead())
+        if (npc.Target == null)
         {
+            npc.GetComponent<NpcDescription>().AddSystemMessage("Вы потеряли цель.");
+            AttackingSession = true;
+            npc.Go();
+            return;
+        }
+        else if(npc.Target.GetComponent<IDyinable>().IsDead())
+        {
+            npc.GetComponent<NpcDescription>().AddSystemMessage("Вы вырубили " + GlobalLists.MobList.instance.FindMob(npc.Target.name).Name + ". Теперь он без сознания. Вы уходите в свое обычное место пребывания.");
+            AttackingSession = true;
             npc.Go();
             return;
         }
@@ -86,7 +102,7 @@ public class AttackNpcState : NpcState
 
     private void CheckHitbox()
     {
-        Debug.Log("Checking Hitbox");
+        //Debug.Log("Checking Hitbox");
         if (npc.Target != null)
         {
             Collider[] hitColliders = Physics.OverlapSphere(npc.transform.position + npc.transform.forward * attackRange, attackRange);
@@ -94,7 +110,7 @@ public class AttackNpcState : NpcState
             {
                 if (hitCollider.gameObject == npc.Target)
                 {
-                    Debug.Log(npc.Target);
+                    //Debug.Log(npc.Target);
                     hitCollider.gameObject.GetComponent<IDamagable>().Damage(damage, npc.gameObject);
                 }
             }

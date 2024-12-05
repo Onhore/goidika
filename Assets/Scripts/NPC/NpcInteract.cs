@@ -20,9 +20,18 @@ public class NpcInteract : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        Debug.Log("Interact!");
-        if (!GetComponent<Npc>().IsDead())
+        if (GetComponent<Npc>().IsDead())
+            return;
+        
+        if (Player.instance.HandsFull && Player.instance.pickedItem is not Weapon)
+        {
+            Player.instance.pickedItem.GiveToNpc(GetComponent<Npc>());
+        }
+        else
+        {
+            //Debug.Log("Interact!");
             Player.instance.Dialogue?.StartDialogue(GetComponent<NpcDescription>());
+        }
     }
 
 

@@ -7,6 +7,7 @@ public class PlayerInventory : MonoBehaviour
 {
     //private List<Item> inventory;
     private Item ActiveSlot;
+    public Item Item => ActiveSlot;
     public bool HandsFull => ActiveSlot != null;
     private bool onDialogue => Player.instance.onDialogue;
     private void Update()

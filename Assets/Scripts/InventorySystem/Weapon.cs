@@ -27,7 +27,7 @@ public class Weapon : Item
             IDamagable damageable = target.GetComponent<IDamagable>();
             if (damageable != null)
             {
-                Debug.Log("Получение урона");
+                //Debug.Log("Получение урона");
                 damageable.Damage(damage, pickedUpBy);
             }
     }

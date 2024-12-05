@@ -20,7 +20,8 @@ public class DialogueLine : DialogueBaseClass
     }
     public void WriteText(string text, AudioClip sound, float delay)
     {
-        StartCoroutine(WriteText(text, textHolder, textColor, textFont, delay, sound));
+        if (gameObject.activeInHierarchy)
+            StartCoroutine(WriteText(text, textHolder, textColor, textFont, delay, sound));
     }
 }
 }

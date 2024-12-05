@@ -11,6 +11,11 @@ public class GetDamageNpcState : NpcState
     private float knockbackForce = 4f; 
     UnityEngine.AI.NavMeshAgent navMeshAgent;
     Animator animator;
+    private bool messageFlag = true;
+    public void ClearFlag()
+    {
+        messageFlag = true;
+    }
     //Rigidbody rigidbody;
     public GetDamageNpcState(Npc npc, NpcStateMachine stateMachine, UnityEngine.AI.NavMeshAgent navMeshAgent, Animator animator) : base(npc, stateMachine)
     {
@@ -21,13 +26,19 @@ public class GetDamageNpcState : NpcState
     public override void EnterState()
     {
         base.EnterState();
+        damageStartTime=0;
         navMeshAgent.isStopped = true;
         damageStartTime = Time.time;
         animator.SetTrigger("Hit");
         npc.GetComponent<Health>().IsInvulnerable = true;
         
         npc.GetInvulnerability(invulnerabilityDuration);
-        
+        if (messageFlag)
+        {
+            npc.GetComponent<NpcDescription>().AddSystemMessage("Вас атаковал " + GlobalLists.MobList.instance.FindMob(npc.GetComponent<Health>()?.LastEnemy.name).Name);
+            messageFlag = false;
+        }
+            
         //Knockback();
     }
     public override void Update()

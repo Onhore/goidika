@@ -13,7 +13,7 @@ public class Health : Progressive, IDamagable, IHealable
 
     public void Damage(float amount, GameObject enemy)
     {
-        Debug.Log(IsInvulnerable);
+        //Debug.Log(IsInvulnerable);
         if (IsInvulnerable)
             return;
         Current -= amount;

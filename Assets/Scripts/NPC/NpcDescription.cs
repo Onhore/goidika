@@ -26,8 +26,7 @@ public class NpcDescription : MonoBehaviour
     void Start()
     {
         SetContext(Description);
-        Debug.Log(this + " " + Description);
-        //Debug.Log(CheckCommand("Привет путник! [Атаковать Player] dgd [Идти вперед] впыппыпыф фпфвпы ывп ып [Срать под себя]"));
+        //Debug.Log(this + " " + Description);
     }
 
     private void SetContext(string text)
@@ -37,17 +36,18 @@ public class NpcDescription : MonoBehaviour
         newMessage.Role = "system";
 
         messages.Add(newMessage);
+        Debug.Log(this + text);
     }
     public void AddSystemMessage(string text) => SetContext(text);
 
     public async void Ask(string text)
     {
         string answ = await ChatGPT.AskChatGPT(text, messages);
-        Debug.Log(answ);
+        Debug.Log(this + answ);
         answ = CheckCommand(answ);
         Player.instance.GetComponent<PlayerDialogue>().WriteText(answ, sound, delay);
         //Diag.text = answ;
-        Debug.Log(answ);
+        //Debug.Log(answ);
     }
 
     public string CheckCommand(string text)
@@ -80,11 +80,11 @@ public class NpcDescription : MonoBehaviour
                     }
                     break;
                 case "Следовать":
-                    GameObject target = GlobalLists.MobList.instance.FindMob(parts[1]);
-                    Debug.Log(parts[1]);
-                    if (target != null)
+                    GameObject ftarget = GlobalLists.MobList.instance.FindMob(parts[1]).gameObject;
+                    //Debug.Log(parts[1]);
+                    if (ftarget != null)
                     {
-                        npc.EndDialogueEvent += () => npc.Follow(target);
+                        npc.EndDialogueEvent += () => npc.Follow(ftarget);
                     }
                     break;
                 case "ПрекратитьСледование":
@@ -94,10 +94,14 @@ public class NpcDescription : MonoBehaviour
                     npc.StopGo();
                     break;
                 case "Атаковать":
-                    //Attack(attribute);
-                    break;
-                case "ПроверитьИнвентарь":
-                    //CheckInventory(attribute);
+                    GameObject target = GlobalLists.MobList.instance.FindMob(parts[1]).gameObject;
+                    Debug.Log(target);
+                    if (target != null)
+                    {
+                        npc.EndDialogueEvent+= () => npc.Attack(target);
+                        if (target == Player.instance.gameObject && Player.instance.onDialogue)
+                            Player.instance.GetComponent<PlayerDialogue>().EndDialogue();
+                    }
                     break;
                 case "Закончить":
                     //Finish(attribute);
