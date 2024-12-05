@@ -1,20 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using com.cyborgAssets.inspectorButtonPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NpcDescription))]
 [RequireComponent(typeof(NpcInteract))]
-public class Npc : MonoBehaviour
+public class Npc : MonoBehaviour, IDyinable
 {
     NpcStateMachine stateMachine;
     private IdleNpcState IdleState;
     private DialogueNpcState DialogueState;
     private FollowNpcState  FollowState;
     private GoToNpcState  GoToState;
+    private AttackNpcState  AttackState;
+    private GetDamageNpcState  GetDamageState;
+    private DeadNpcState  DeadState;
     private NavMeshAgent navMeshAgent;
     //public Transform GoToPoint;
+    public GameObject Target {private set; get;}
     public GameObject FollowTarget {private set; get;}
     public GlobalLists.Place GoToPlace {private set; get;}
     public Vector3 DefaultBasePoint {private set; get;}
@@ -25,7 +30,11 @@ public class Npc : MonoBehaviour
     [SerializeField] private float followDistance = 5f; 
     [SerializeField] private float maxFollowDistance = 20f; 
     [SerializeField] private float placeDistance = 3f;
-
+    [SerializeField] private float deadTime = 30f;
+    [SerializeField] private float AttackDamage;
+    [SerializeField] private LayerMask Hittable;
+    
+    public bool isDead = false;
 
     private NpcDescription npcDescription;
     public Animator animator;
@@ -37,10 +46,13 @@ public class Npc : MonoBehaviour
         npcDescription = GetComponent<NpcDescription>();
         stateMachine = new NpcStateMachine();
         //animator = GetComponent<Animator>();
-        IdleState = new IdleNpcState(this, stateMachine);
+        IdleState = new IdleNpcState(this, stateMachine, navMeshAgent);
         DialogueState = new DialogueNpcState(this, stateMachine, navMeshAgent, dialogueRotationSpeed);
         FollowState = new FollowNpcState(this, stateMachine, navMeshAgent, GoToState, IdleState, maxFollowDistance,followDistance,animator);
         GoToState = new GoToNpcState(this, stateMachine, navMeshAgent, IdleState, animator, placeDistance, DefaultBasePoint);
+        AttackState = new AttackNpcState(this, stateMachine, navMeshAgent, animator);
+        GetDamageState = new GetDamageNpcState(this, stateMachine, navMeshAgent, animator);
+        DeadState = new DeadNpcState(this, stateMachine, navMeshAgent, animator, GetComponent<CharacterController>(), deadTime);
     }
 
     private void Start()
@@ -53,99 +65,26 @@ public class Npc : MonoBehaviour
     private void Update()
     {
         stateMachine.CurrentState.Update();
-        /*switch (currentState)
-        {
-            case StateMachine.Idle:
-                IdleUpdate();
-                break;
-            case StateMachine.GoTo:
-                GoToUpdate();
-                break;
-            case StateMachine.Follow:
-                FollowUpdate();
-                break;
-            case StateMachine.Attack:
-                AttackUpdate();
-                break;
-            case StateMachine.Dialogue:
-                DialogueUpdate();
-                break;
-        }*/
+        animator.SetBool("isWalking", !navMeshAgent.isStopped);
+        animator.SetBool("Dead", isDead);
     }
 
     private void IdleUpdate()
-    {
+    { 
         // Implement idle behavior
         //animator.SetBool("isWalking", false);
     }
-
-    /*private void GoToUpdate()
-    {
-        if (navMeshAgent.isStopped)
-            navMeshAgent.isStopped = false;
-        if (Vector3.Distance(transform.position, navMeshAgent.destination) <= PlaceDistance)
-        {
-            navMeshAgent.isStopped = true;
-            //npcDescription.AddSystemMessage("Вы прибыли в место: " + goToPlace.Name + ". Описание: " + goToPlace.Description);
-            Debug.Log("Reached destination, switching to Idle state");
-            goToPlace = null;
-            //currentState = StateMachine.Idle;
-        }
-        animator.SetBool("isWalking", true);
-    }*/
-
-    /*private void FollowUpdate()
-    {
-        if (followTarget != null)
-        {
-            float distanceToTarget = Vector3.Distance(transform.position, followTarget.transform.position);
-            if (distanceToTarget > maxFollowDistance)
-            {
-                navMeshAgent.destination = defaultBasePoint.position;
-                //currentState = StateMachine.GoTo;
-                followTarget = null;
-                Debug.Log("Target is too far, returning to base point");
-            }
-            else if (distanceToTarget > followDistance)
-            {
-                navMeshAgent.destination = followTarget.transform.position;
-                animator.SetBool("isWalking", true);
-                Debug.Log("Следование");
-                navMeshAgent.isStopped = false;
-            }
-            else
-            {
-                navMeshAgent.isStopped = true;
-                animator.SetBool("isWalking", false);
-            }
-        }
-        else
-        {
-            //currentState = StateMachine.Idle;
-        }
-    }*/
 
     private void AttackUpdate()
     {
         // Implement attack behavior
     }
-
-    /*private void DialogueUpdate()
-    {
-        Vector3 direction = Player.instance.transform.position - transform.position;
-        direction.y = 0;
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, dialogueRotationSpeed * Time.deltaTime);
-        }
-    }*/
-
+    [ProButton]
     public void Idle()
     {
         stateMachine.ChangeState(IdleState);
     }
-
+   // [ProButton]
     public void Go(GlobalLists.Place place)
     {
         GoToPlace = place;
@@ -153,6 +92,7 @@ public class Npc : MonoBehaviour
         //currentState = StateMachine.GoTo;
         //navMeshAgent.destination = GoToPlace.Coordinates.position;
     }
+    [ProButton]
     public void Go()
     {
         GoToPlace = null;
@@ -160,7 +100,7 @@ public class Npc : MonoBehaviour
         //currentState = StateMachine.GoTo;
         //navMeshAgent.destination = GoToPlace.Coordinates.position;
     }
-
+    [ProButton]
     public void StopGo()
     {
         GoToPlace = null;
@@ -168,13 +108,13 @@ public class Npc : MonoBehaviour
         //lastState = StateMachine.Idle;
         //navMeshAgent.destination = transform.position;
     }
-
+    [ProButton]
     public void Follow(GameObject target)
     {
         FollowTarget = target;
         stateMachine.ChangeState(FollowState);
     }
-
+    [ProButton]
     public void StopFollow()
     {
         EndDialogueEvent = null;
@@ -182,10 +122,23 @@ public class Npc : MonoBehaviour
         FollowTarget = null;
         stateMachine.ChangeState(IdleState);
     }
-
-    public void Attack(LayerMask enemyLayerMask)
+    [ProButton]
+    public void Attack(GameObject target)
     {
+        if(target == null)
+            Idle();
+        if (Extensions.UnityAdditions.IsObjectInLayerMask(target, Hittable))
+        {
+            Target = target;
+            stateMachine.ChangeState(AttackState);
+            Debug.Log("Attack Start");
+        }   
         //currentState = StateMachine.Attack;
+    }
+    [ProButton]
+    public void GetDamage()
+    {
+        stateMachine.ChangeState(GetDamageState);
     }
 
     public void StartDialogue()
@@ -208,4 +161,39 @@ public class Npc : MonoBehaviour
         EndDialogueEvent?.Invoke();
         
     }
+    public void GetInvulnerability(float duration)
+    {
+        StartCoroutine(InvulnerabilityEffect(duration));
+    }
+    private IEnumerator InvulnerabilityEffect(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        GetComponent<Health>().IsInvulnerable = false;
+    }
+    [ProButton]
+    public void Death()
+    {
+        Target = null;
+        FollowTarget = null;
+        stateMachine.ChangeState(DeadState);
+    }
+    public void ForgotAttackTarget()
+    {
+        Target = null;
+    }
+    public bool IsDead() => isDead;
+}
+
+namespace Extensions
+{
+    public static class UnityAdditions
+    {
+    public static bool IsObjectInLayerMask(GameObject obj, LayerMask layerMask)
+    {
+        int objLayer = obj.layer;
+        int mask = layerMask.value;
+        return (mask & (1 << objLayer)) > 0;
+    }
+    }
+    
 }

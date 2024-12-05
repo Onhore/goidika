@@ -23,7 +23,7 @@ public class GoToNpcState : NpcState
     public override void EnterState()
     {
         base.EnterState();
-        animator.SetBool("isWalking", true);
+        //animator.SetBool("isWalking", true);
         
         if(goToPlace == null)
             navMeshAgent.destination = defaultBasePoint;
@@ -48,6 +48,6 @@ public class GoToNpcState : NpcState
     public override void ExitState()
     {
         base.ExitState();
-        animator.SetBool("isWalking", false);
+        //animator.SetBool("isWalking", false);
     }
 }

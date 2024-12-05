@@ -28,7 +28,7 @@ public class Weapon : Item
             if (damageable != null)
             {
                 Debug.Log("Получение урона");
-                damageable.Damage(damage);
+                damageable.Damage(damage, pickedUpBy);
             }
     }
     }

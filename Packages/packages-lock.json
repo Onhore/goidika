@@ -9,7 +9,7 @@
       }
     },
     "com.srcnalt.openai-unity": {
-      "version": "file:C:/Users/user/Downloads/OpenAI-Unity-master",
+      "version": "file:D:/UnityProjects/OpenAI-Unity-master",
       "depth": 0,
       "source": "local",
       "dependencies": {

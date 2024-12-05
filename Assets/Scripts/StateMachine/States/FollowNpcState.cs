@@ -42,14 +42,14 @@ public class FollowNpcState : NpcState
         else if (distanceToTarget > followDistance)
         {
             navMeshAgent.destination = followTarget.transform.position;
-            animator.SetBool("isWalking", true);
+            //animator.SetBool("isWalking", true);
             Debug.Log("Следование");
             navMeshAgent.isStopped = false;
         }
         else
         {
             navMeshAgent.isStopped = true;
-            animator.SetBool("isWalking", false);
+            //animator.SetBool("isWalking", false);
         }
 
     }

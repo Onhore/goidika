@@ -28,7 +28,7 @@ public class Item : MonoBehaviour, IInteractable
     private Collider collider;
 
     private bool PickedUp = false;
-    private GameObject pickedUpBy;
+    protected GameObject pickedUpBy;
 
     [SerializeField] protected UnityEvent OnClick;
 

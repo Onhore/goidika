@@ -21,7 +21,8 @@ public class NpcInteract : MonoBehaviour, IInteractable
     public void Interact()
     {
         Debug.Log("Interact!");
-        Player.instance.Dialogue?.StartDialogue(GetComponent<NpcDescription>());
+        if (!GetComponent<Npc>().IsDead())
+            Player.instance.Dialogue?.StartDialogue(GetComponent<NpcDescription>());
     }
 
 
