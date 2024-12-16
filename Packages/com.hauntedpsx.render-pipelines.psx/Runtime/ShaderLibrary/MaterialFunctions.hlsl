@@ -258,7 +258,8 @@ float3 ApplyVertexColorPerPixelEmission(float3 emission, float4 vertexColor, flo
     float3 res = emission;
 
 #if defined(_VERTEX_COLOR_MODE_EMISSION) || defined(_VERTEX_COLOR_MODE_EMISSION_AND_ALPHA_ONLY)
-    res *= vertexColor * affineWarpingScaleInverse;
+    // Предположим, что vertexColor является float4, а affineWarpingScaleInverse является float
+res *= vertexColor * float4(affineWarpingScaleInverse, affineWarpingScaleInverse, affineWarpingScaleInverse, affineWarpingScaleInverse);
 #endif
 
     return res;

@@ -5,6 +5,7 @@ using UnityEngine;
 using OpenAI;
 using TMPro;
 using System.Text.RegularExpressions;
+using com.cyborgAssets.inspectorButtonPro;
 
 [RequireComponent(typeof(Npc))]
 public class NpcDescription : MonoBehaviour
@@ -39,20 +40,30 @@ public class NpcDescription : MonoBehaviour
         Debug.Log(this + text);
     }
     public void AddSystemMessage(string text) => SetContext(text);
-
+    public async void ReactSystemMessage(string text)
+    {
+        Debug.Log(text);
+        string answ = await ChatGPT.AskChatGPT("[system]: " + text, messages);
+        Debug.Log(this.gameObject +" "+ answ);
+        CheckCommand(answ);
+    }
     public async void Ask(string text)
     {
         string answ = await ChatGPT.AskChatGPT(text, messages);
-        Debug.Log(this + answ);
+        Debug.Log(this.gameObject +" "+ answ);
         answ = CheckCommand(answ);
         Player.instance.GetComponent<PlayerDialogue>().WriteText(answ, sound, delay);
         //Diag.text = answ;
         //Debug.Log(answ);
     }
-
+    public void EnterAsk(string text)
+    {
+        Ask("[Игрок]: " + text);
+    }
+    [ProButton]
     public string CheckCommand(string text)
     {
-        // Используем регулярное выражение для поиска команды в квадратных скобках
+        // Используем выражение для поиска команды в квадратных скобках
         Match match = Regex.Match(text, @"\((.*?)\)");
         if (match.Success)
         {
@@ -63,20 +74,24 @@ public class NpcDescription : MonoBehaviour
             if (parts.Length > 2)
             {
                 Debug.LogError("Неверный формат команды: " + commandText);
-                return text; // Возвращаем исходный текст, если формат команды неверен
+                return text;
             }
 
             string command = parts[0];
             //string attribute = parts[1];
 
-            // Проверяем команду и вызываем соответствующий метод
             switch (command)
             {
                 case "Идти":
+                    if (parts.Length < 2)
+                        break;
                     GlobalLists.Place place = GlobalLists.PlaceList.instance.FindPlace(parts[1]);
                     if (place != null)
                     {
-                        npc.EndDialogueEvent += () => npc.Go(place);
+                        if (npc.OnDialogue)
+                            npc.EndDialogueEvent += () => npc.Go(place);
+                        else
+                            npc.Go(place);
                     }
                     break;
                 case "Следовать":
@@ -84,7 +99,10 @@ public class NpcDescription : MonoBehaviour
                     //Debug.Log(parts[1]);
                     if (ftarget != null)
                     {
-                        npc.EndDialogueEvent += () => npc.Follow(ftarget);
+                        if (npc.OnDialogue)
+                            npc.EndDialogueEvent += () => npc.Follow(ftarget);
+                        else
+                            npc.Follow(ftarget);
                     }
                     break;
                 case "ПрекратитьСледование":
@@ -98,13 +116,18 @@ public class NpcDescription : MonoBehaviour
                     Debug.Log(target);
                     if (target != null)
                     {
-                        npc.EndDialogueEvent+= () => npc.Attack(target);
-                        if (target == Player.instance.gameObject && Player.instance.onDialogue)
-                            Player.instance.GetComponent<PlayerDialogue>().EndDialogue();
+                        if (npc.OnDialogue)
+                        {
+                            npc.EndDialogueEvent+= () => npc.Attack(target);
+                            if (target == Player.instance.gameObject && Player.instance.onDialogue)
+                                Player.instance.GetComponent<PlayerDialogue>().EndDialogue();
+                        }
+                        else
+                            npc.Attack(target);
                     }
                     break;
-                case "Закончить":
-                    //Finish(attribute);
+                case "СлучайнаяХодьба":
+                    npc.RandomWalk();
                     break;
                 default:
                     //Debug.LogError("Неизвестная команда: " + command);
@@ -117,7 +140,7 @@ public class NpcDescription : MonoBehaviour
         else
         {
             //Debug.LogError("Команда не найдена в тексте: " + text);
-            return text; // Возвращаем исходный текст, если команда не найдена
+            return text;
         }
     }
 }

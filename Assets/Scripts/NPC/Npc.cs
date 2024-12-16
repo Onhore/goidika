@@ -16,6 +16,7 @@ public class Npc : MonoBehaviour, IDyinable
     private GoToNpcState  GoToState;
     private AttackNpcState  AttackState;
     private GetDamageNpcState  GetDamageState;
+    private RandomWalkNpcState RandomWalkState;
     private DeadNpcState  DeadState;
     private NavMeshAgent navMeshAgent;
     //public Transform GoToPoint;
@@ -33,7 +34,7 @@ public class Npc : MonoBehaviour, IDyinable
     [SerializeField] private float deadTime = 30f;
     [SerializeField] private float AttackDamage;
     [SerializeField] private LayerMask Hittable;
-    
+    public bool OnDialogue = false;
     public bool isDead = false;
 
     private NpcDescription npcDescription;
@@ -50,6 +51,7 @@ public class Npc : MonoBehaviour, IDyinable
         DialogueState = new DialogueNpcState(this, stateMachine, navMeshAgent, dialogueRotationSpeed);
         FollowState = new FollowNpcState(this, stateMachine, navMeshAgent, GoToState, IdleState, maxFollowDistance,followDistance,animator);
         GoToState = new GoToNpcState(this, stateMachine, navMeshAgent, IdleState, animator, placeDistance, DefaultBasePoint);
+        RandomWalkState = new RandomWalkNpcState(this, stateMachine, navMeshAgent, animator);
         AttackState = new AttackNpcState(this, stateMachine, navMeshAgent, animator, AttackDamage);
         GetDamageState = new GetDamageNpcState(this, stateMachine, navMeshAgent, animator);
         DeadState = new DeadNpcState(this, stateMachine, navMeshAgent, animator, GetComponent<CharacterController>(), deadTime);
@@ -140,7 +142,11 @@ public class Npc : MonoBehaviour, IDyinable
     {
         stateMachine.ChangeState(GetDamageState);
     }
-
+    [ProButton]
+    public void RandomWalk()
+    {
+        stateMachine.ChangeState(RandomWalkState);
+    }
     public void StartDialogue()
     {
         //if (//currentState == StateMachine.GoTo)

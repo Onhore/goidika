@@ -50,6 +50,7 @@ public class AttackNpcState : NpcState
         else if(npc.Target.GetComponent<IDyinable>().IsDead())
         {
             npc.GetComponent<NpcDescription>().AddSystemMessage("Вы вырубили " + GlobalLists.MobList.instance.FindMob(npc.Target.name).Name + ". Теперь он без сознания. Вы уходите в свое обычное место пребывания.");
+            ChatGPTManager.instance.BroadcastMessageWithReaction(npc.name + " вырубил " + GlobalLists.MobList.instance.FindMob(npc.Target.name).Name, new GameObject[] {npc.gameObject, npc.Target});
             AttackingSession = true;
             npc.Go();
             return;

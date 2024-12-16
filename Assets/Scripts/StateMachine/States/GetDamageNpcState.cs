@@ -36,6 +36,7 @@ public class GetDamageNpcState : NpcState
         if (messageFlag)
         {
             npc.GetComponent<NpcDescription>().AddSystemMessage("Вас атаковал " + GlobalLists.MobList.instance.FindMob(npc.GetComponent<Health>()?.LastEnemy.name).Name);
+            ChatGPTManager.instance.BroadcastMessageWithReaction(GlobalLists.MobList.instance.FindMob(npc.GetComponent<Health>()?.LastEnemy.name).Name + " атаковал " + npc.name, new GameObject[] {npc.gameObject, npc.GetComponent<Health>()?.LastEnemy});
             messageFlag = false;
         }
             

@@ -1,14 +1,22 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpenAI;
-using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using UnityEngine;
 
 public class ChatGPTManager : MonoBehaviour
 {
+    public static ChatGPTManager instance = null; 
+    [SerializeField] private List<GameObject> npcs; 
     private OpenAIApi openAI = new OpenAIApi();
     //private List<ChatMessage> messages = new List<ChatMessage>();
+    private void Awake()
+    {
+        if (instance == null) 
+            instance = this; 
+        else if(instance == this)
+            Destroy(gameObject); 
+    }
 
     public async Task<string> AskChatGPT(string newText, List<ChatMessage>messages)
     {
@@ -34,6 +42,25 @@ public class ChatGPTManager : MonoBehaviour
         }
         return "Ничего";
     }
+    public void BroadcastMessageWithReaction(string text, GameObject[] _npcs)
+{
+    foreach (GameObject npc in npcs)
+    {
+        if (Array.Exists(_npcs, element => element == npc))
+            continue;
+        npc.GetComponent<NpcDescription>()?.ReactSystemMessage(text);
+        Debug.Log(npc.name + text);
+    }
+}
 
+public void BroadcastMessage(string text, GameObject[] _npcs)
+{
+    foreach (GameObject npc in npcs)
+    {
+        if (Array.Exists(_npcs, element => element == npc))
+            continue;
+        npc.GetComponent<NpcDescription>()?.AddSystemMessage(text);
+    }
+}
 
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour, IDyinable
 {
@@ -49,6 +50,8 @@ public class Player : MonoBehaviour, IDyinable
     }
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.R) && !onDialogue)
+            SceneManager.LoadScene(0);
         if(isDead)
         {
             deathTime -= Time.deltaTime;
