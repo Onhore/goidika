@@ -26,6 +26,7 @@ public class FollowNpcState : NpcState
     public override void EnterState()
     {
         base.EnterState();
+        followTarget.GetComponent<NpcDescription>()?.ReactSystemMessage("За вами следует " + npc.name);
     }
     public override void Update()
     {
@@ -43,7 +44,7 @@ public class FollowNpcState : NpcState
         {
             navMeshAgent.destination = followTarget.transform.position;
             //animator.SetBool("isWalking", true);
-            Debug.Log("Следование");
+            //Debug.Log("Следование");
             navMeshAgent.isStopped = false;
         }
         else

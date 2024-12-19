@@ -29,7 +29,10 @@ public class GoToNpcState : NpcState
         if(goToPlace == null)
             navMeshAgent.destination = defaultBasePoint;
         else
+        {
             navMeshAgent.destination = goToPlace.Coordinates.position;
+            ChatGPTManager.instance.BroadcastMessageWithReaction(npc.name + " отправился в " + goToPlace.Name, new GameObject[] {npc.gameObject});
+        }
     }
     public override void Update()
     {
@@ -42,7 +45,9 @@ public class GoToNpcState : NpcState
             //npcDescription.AddSystemMessage("Вы прибыли в место: " + goToPlace.Name + ". Описание: " + goToPlace.Description);
             //Debug.Log("Reached destination, switching to Idle state");
             if(goToPlace != null)
+            {
                 npc.GetComponent<NpcDescription>().AddSystemMessage("Вы прибыли в " + goToPlace.Name + ". Описание: " + goToPlace.Description);
+            }
             npc.Idle();
             //currentState = StateMachine.Idle;
         }

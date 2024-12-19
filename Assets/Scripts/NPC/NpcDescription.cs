@@ -26,7 +26,7 @@ public class NpcDescription : MonoBehaviour
 
     void Start()
     {
-        SetContext(Description);
+        SetContext(Description + ChatGPT.GeneralDescription);
         //Debug.Log(this + " " + Description);
     }
 
@@ -42,7 +42,7 @@ public class NpcDescription : MonoBehaviour
     public void AddSystemMessage(string text) => SetContext(text);
     public async void ReactSystemMessage(string text)
     {
-        Debug.Log(text);
+        //Debug.Log(text);
         string answ = await ChatGPT.AskChatGPT("[system]: " + text, messages);
         Debug.Log(this.gameObject +" "+ answ);
         CheckCommand(answ);
@@ -105,6 +105,17 @@ public class NpcDescription : MonoBehaviour
                             npc.Follow(ftarget);
                     }
                     break;
+                case "Подойти":
+                    GameObject target = GlobalLists.MobList.instance.FindMob(parts[1]).gameObject;
+                    //Debug.Log(parts[1]);
+                    if (target != null)
+                    {
+                        if (npc.OnDialogue)
+                            npc.EndDialogueEvent += () => npc.ApproachTo(target);
+                        else
+                            npc.ApproachTo(target);
+                    }
+                    break;
                 case "ПрекратитьСледование":
                     npc.StopFollow();
                     break;
@@ -112,7 +123,7 @@ public class NpcDescription : MonoBehaviour
                     npc.StopGo();
                     break;
                 case "Атаковать":
-                    GameObject target = GlobalLists.MobList.instance.FindMob(parts[1]).gameObject;
+                    target = GlobalLists.MobList.instance.FindMob(parts[1]).gameObject;
                     Debug.Log(target);
                     if (target != null)
                     {
@@ -128,6 +139,8 @@ public class NpcDescription : MonoBehaviour
                     break;
                 case "СлучайнаяХодьба":
                     npc.RandomWalk();
+                    break;
+                case "Ничего":
                     break;
                 default:
                     //Debug.LogError("Неизвестная команда: " + command);

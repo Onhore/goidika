@@ -17,6 +17,7 @@ public class Npc : MonoBehaviour, IDyinable
     private AttackNpcState  AttackState;
     private GetDamageNpcState  GetDamageState;
     private RandomWalkNpcState RandomWalkState;
+    private ApproachNpcState ApproachState;
     private DeadNpcState  DeadState;
     private NavMeshAgent navMeshAgent;
     //public Transform GoToPoint;
@@ -51,7 +52,8 @@ public class Npc : MonoBehaviour, IDyinable
         DialogueState = new DialogueNpcState(this, stateMachine, navMeshAgent, dialogueRotationSpeed);
         FollowState = new FollowNpcState(this, stateMachine, navMeshAgent, GoToState, IdleState, maxFollowDistance,followDistance,animator);
         GoToState = new GoToNpcState(this, stateMachine, navMeshAgent, IdleState, animator, placeDistance, DefaultBasePoint);
-        RandomWalkState = new RandomWalkNpcState(this, stateMachine, navMeshAgent, animator);
+        RandomWalkState = new RandomWalkNpcState(this, stateMachine, navMeshAgent);
+        ApproachState = new ApproachNpcState(this, stateMachine, navMeshAgent, 1.5f);
         AttackState = new AttackNpcState(this, stateMachine, navMeshAgent, animator, AttackDamage);
         GetDamageState = new GetDamageNpcState(this, stateMachine, navMeshAgent, animator);
         DeadState = new DeadNpcState(this, stateMachine, navMeshAgent, animator, GetComponent<CharacterController>(), deadTime);
@@ -146,6 +148,12 @@ public class Npc : MonoBehaviour, IDyinable
     public void RandomWalk()
     {
         stateMachine.ChangeState(RandomWalkState);
+    }
+    [ProButton]
+    public void ApproachTo(GameObject target)
+    {
+        FollowTarget = target;
+        stateMachine.ChangeState(ApproachState);
     }
     public void StartDialogue()
     {

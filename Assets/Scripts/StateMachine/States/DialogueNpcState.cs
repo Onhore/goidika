@@ -17,7 +17,7 @@ public class DialogueNpcState : NpcState
         base.EnterState();
         navMeshAgent.isStopped = true;
         npc.OnDialogue = true;
-        ChatGPTManager.instance.BroadcastMessageWithReaction(npc.name + " начинает диалог с Player", new GameObject[] {npc.gameObject, npc.Target});
+        ChatGPTManager.instance.BroadcastMessageWithReaction("Player начинает диалог с " + npc.name , new GameObject[] {npc.gameObject, npc.Target});
     }
     public override void Update()
     {
@@ -32,6 +32,7 @@ public class DialogueNpcState : NpcState
     }
     public override void ExitState()
     {
+        ChatGPTManager.instance.BroadcastMessageWithReaction("Диалог Player и " + npc.name + " заканчивается.", new GameObject[] {npc.gameObject, Player.instance.gameObject});
         npc.OnDialogue = false;
         base.ExitState();
         //npc.EndDialogueEvent.

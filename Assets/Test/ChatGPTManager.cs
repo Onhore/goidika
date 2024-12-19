@@ -10,6 +10,8 @@ public class ChatGPTManager : MonoBehaviour
     [SerializeField] private List<GameObject> npcs; 
     private OpenAIApi openAI = new OpenAIApi();
     //private List<ChatMessage> messages = new List<ChatMessage>();
+    [SerializeField] [TextArea(15, 20)] private string generalDescription;
+    public string GeneralDescription => generalDescription;
     private void Awake()
     {
         if (instance == null) 
