@@ -52,6 +52,7 @@ public class AttackNpcState : NpcState
             npc.GetComponent<NpcDescription>().AddSystemMessage("Вы вырубили " + GlobalLists.MobList.instance.FindMob(npc.Target.name).Name + ". Теперь он без сознания. Вы уходите в свое обычное место пребывания.");
             ChatGPTManager.instance.BroadcastMessageWithReaction(npc.name + " вырубил " + GlobalLists.MobList.instance.FindMob(npc.Target.name).Name, new GameObject[] {npc.gameObject, npc.Target});
             AttackingSession = true;
+            npc.ForgotAttackTarget();
             npc.Go();
             return;
         }
@@ -83,7 +84,6 @@ public class AttackNpcState : NpcState
     public override void ExitState()
     {
         base.ExitState();
-        npc.ForgotAttackTarget();
     }
 
     private void StartAttack()

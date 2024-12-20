@@ -155,10 +155,11 @@ public class Npc : MonoBehaviour, IDyinable
         FollowTarget = target;
         stateMachine.ChangeState(ApproachState);
     }
-    public void StartDialogue()
+    public void StartDialogue(GameObject target)
     {
         //if (//currentState == StateMachine.GoTo)
         //navMeshAgent.isStopped = true;
+        Target = target;
         stateMachine.ChangeState(DialogueState);
         //inDialogue = true;
         //lastState = currentState;

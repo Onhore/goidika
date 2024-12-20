@@ -18,7 +18,7 @@ public class PlayerDialogue : MonoBehaviour
     {
         onDialogue = true;
         npcInDialog = npc.gameObject.GetComponent<Npc>();
-        npcInDialog.StartDialogue();
+        npcInDialog.StartDialogue(Player.instance.gameObject);
         InputField.onEndEdit.AddListener(npc.EnterAsk);
         OnStartDialogue.Invoke();
     }

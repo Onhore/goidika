@@ -6,6 +6,7 @@ using OpenAI;
 using TMPro;
 using System.Text.RegularExpressions;
 using com.cyborgAssets.inspectorButtonPro;
+using System.Threading.Tasks;
 
 [RequireComponent(typeof(Npc))]
 public class NpcDescription : MonoBehaviour
@@ -58,7 +59,7 @@ public class NpcDescription : MonoBehaviour
     }
     public void EnterAsk(string text)
     {
-        Ask("[Игрок]: " + text);
+        Ask("[Player]: " + text);
     }
     [ProButton]
     public string CheckCommand(string text)
@@ -84,7 +85,8 @@ public class NpcDescription : MonoBehaviour
             {
                 case "Идти":
                     if (parts.Length < 2)
-                        break;
+                       { npc.Go();
+                        break;}
                     GlobalLists.Place place = GlobalLists.PlaceList.instance.FindPlace(parts[1]);
                     if (place != null)
                     {
@@ -124,7 +126,7 @@ public class NpcDescription : MonoBehaviour
                     break;
                 case "Атаковать":
                     target = GlobalLists.MobList.instance.FindMob(parts[1]).gameObject;
-                    Debug.Log(target);
+                    //Debug.Log(target);
                     if (target != null)
                     {
                         if (npc.OnDialogue)
@@ -139,6 +141,21 @@ public class NpcDescription : MonoBehaviour
                     break;
                 case "СлучайнаяХодьба":
                     npc.RandomWalk();
+                    break;
+                case "НачатьДиалог":
+                    if (parts.Length < 2)
+                            break;
+                    target = GlobalLists.MobList.instance.FindMob(parts[1]).gameObject;
+                    //Debug.Log(parts[1]);
+                    if (target != null)
+                    {
+                        if (!npc.OnDialogue && target != Player.instance.gameObject && npc.gameObject != target)
+                            DialogueManager.instance.StartDialogue(npc, target.GetComponent<Npc>());
+                    }
+                    break;
+                case "ЗакончитьДиалог":
+                    if (npc.OnDialogue) 
+                        npc.EndDialogue();
                     break;
                 case "Ничего":
                     break;
@@ -155,5 +172,13 @@ public class NpcDescription : MonoBehaviour
             //Debug.LogError("Команда не найдена в тексте: " + text);
             return text;
         }
+    }
+
+    public async Task<string> Request(string request)
+    {
+        string response = await ChatGPT.AskChatGPT(request, messages);
+        //Debug.Log(this.gameObject + " " + response);
+        CheckCommand(response);
+        return response;
     }
 }
