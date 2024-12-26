@@ -17,6 +17,8 @@ public class NpcDescription : MonoBehaviour
     private string LastMessage = "";
     [SerializeField] private AudioClip sound;
     [SerializeField] private float delay;
+
+    public DialogueCloud dialogue;
     //public TMP_Text Diag;
     private Npc npc;
 
@@ -57,6 +59,13 @@ public class NpcDescription : MonoBehaviour
         //Diag.text = answ;
         //Debug.Log(answ);
     }
+    public async Task<string> Request(string request)
+    {
+        string response = await ChatGPT.AskChatGPT(request, messages);
+        //Debug.Log(this.gameObject + " " + response);
+        CheckCommand(response);
+        return response;
+    }
     public void EnterAsk(string text)
     {
         Ask("[Player]: " + text);
@@ -64,7 +73,7 @@ public class NpcDescription : MonoBehaviour
     [ProButton]
     public string CheckCommand(string text)
     {
-        // Используем выражение для поиска команды в квадратных скобках
+        // Используем выражение для поиска команды в круглых скобках
         Match match = Regex.Match(text, @"\((.*?)\)");
         if (match.Success)
         {
@@ -149,7 +158,7 @@ public class NpcDescription : MonoBehaviour
                     //Debug.Log(parts[1]);
                     if (target != null)
                     {
-                        if (!npc.OnDialogue && target != Player.instance.gameObject && npc.gameObject != target)
+                        if (!npc.OnDialogue && target != Player.instance.gameObject && npc.gameObject != target && !target.GetComponent<Npc>().OnDialogue)
                             DialogueManager.instance.StartDialogue(npc, target.GetComponent<Npc>());
                     }
                     break;
@@ -174,11 +183,5 @@ public class NpcDescription : MonoBehaviour
         }
     }
 
-    public async Task<string> Request(string request)
-    {
-        string response = await ChatGPT.AskChatGPT(request, messages);
-        //Debug.Log(this.gameObject + " " + response);
-        CheckCommand(response);
-        return response;
-    }
+    
 }

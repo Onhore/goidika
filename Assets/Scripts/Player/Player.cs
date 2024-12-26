@@ -18,6 +18,7 @@ public class Player : MonoBehaviour, IDyinable
     public PlayerInteract Interact => interact;
     private PlayerInventory inventory;
     public PlayerInventory Inventory => inventory;
+    public GameObject PausePanel;
 
     public bool HandsFull => inventory.HandsFull;
     public Item pickedItem => inventory.Item;
@@ -57,6 +58,15 @@ public class Player : MonoBehaviour, IDyinable
             deathTime -= Time.deltaTime;
             deathText.text = Convert.ToInt32(deathTime).ToString();
         }
+        if (Input.GetKeyDown("escape"))
+		{
+			Pause();
+		}
+    }
+    public void Pause()
+    {
+        PausePanel.SetActive(!PausePanel.active);
+        GetComponent<QMovement>().Lock();
     }
     private IEnumerator DeathCoroutine()
     {

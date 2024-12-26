@@ -73,16 +73,6 @@ public class Npc : MonoBehaviour, IDyinable
         animator.SetBool("Dead", isDead);
     }
 
-    private void IdleUpdate()
-    { 
-        // Implement idle behavior
-        //animator.SetBool("isWalking", false);
-    }
-
-    private void AttackUpdate()
-    {
-        // Implement attack behavior
-    }
     [ProButton]
     public void Idle()
     {
@@ -142,6 +132,7 @@ public class Npc : MonoBehaviour, IDyinable
     [ProButton]
     public void GetDamage()
     {
+        EndDialogue();
         stateMachine.ChangeState(GetDamageState);
     }
     [ProButton]

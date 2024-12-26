@@ -173,10 +173,6 @@ public class QMovement : MonoBehaviour
 		playerCamera.transform.rotation = player_rotation * Quaternion.Euler(look_y, 0, 0);
 		#endif
 		playerCamera.transform.position = transform.position + camera_offset;
-		if (Input.GetKeyDown("escape"))
-		{
-			Application.Quit();
-		}
 	}
 
 	Vector3 ProjectOnPlane (Vector3 vector, Vector3 normal)

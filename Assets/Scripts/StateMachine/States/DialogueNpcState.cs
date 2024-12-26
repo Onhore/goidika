@@ -44,6 +44,8 @@ public class DialogueNpcState : NpcState
         else if (target.GetComponent<Npc>() == null)
             ChatGPTManager.instance.BroadcastMessageWithReaction("Диалог "+ target.name +" и " + npc.name + " заканчивается.", new GameObject[] {npc.gameObject, target});
         npc.OnDialogue = false;
+        //npc.Target = null;
+        npc.ForgotAttackTarget();
         base.ExitState();
         //npc.EndDialogueEvent.
        //npc.EndDialogueEvent.
